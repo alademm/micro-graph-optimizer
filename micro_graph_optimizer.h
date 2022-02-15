@@ -52,21 +52,18 @@ namespace mgo
   class Variable
   {
   public:
-    // To read more about the following manifold related methods (dim, plus, minus) refer to: 
+    // To read more about the following manifold related methods (dim, plus) please refer to: 
     // C. Hertzberg, R. Wagner, U. Frese and L. Schroder, Integrating Generic Sensor Fusion 
     // Algorithms with Sound State Representations through Encapsulation of Manifolds.
 
     // Return the dimensionality of the tangent space. This is the same dimensionality of the
-    // vector delta passed to plus() and the vector returned from minus().
+    // vector delta passed to plus().
     virtual int dim()const = 0;
 
     // Implements retraction operation (box-plus operator). This updates the current state of 
     // the variable (which lives on the manifold) by the small vector delta expressed in the 
     // local tangent space. If the state lives in Euclidean space then this will simply be vector addition. 
     virtual void plus(const Eigen::VectorXd& delta) = 0;
-
-    // Returns the difference between the two states.
-    virtual Eigen::VectorXd minus(const Variable& other)const = 0;
 
     // Whether this variable is fixed in optimization.
     bool fixed = false;
@@ -95,6 +92,9 @@ namespace mgo
     virtual int dim()const = 0;
 
     virtual Eigen::VectorXd error()const = 0;
+
+    // Returns e1 - e2.
+    virtual Eigen::VectorXd subtract_error(const Eigen::VectorXd& e1, const Eigen::VectorXd& e2)const = 0;
 
     // Jacobian wrt to the variable at idx. Defaults 
     // to computing the jacobian numerically.

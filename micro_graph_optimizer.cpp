@@ -299,10 +299,10 @@ namespace mgo
     {
       dx(i) = h;
       v->plus(dx); // right
-      const Eigen::VectorXd dy1 = this->error() - dy0;
+      const Eigen::VectorXd dy1 = this->subtract_error(this->error(), dy0);
       dx(i) = -2.0 * h;
       v->plus(dx); // left
-      const Eigen::VectorXd dy2 = this->error() - dy0;
+      const Eigen::VectorXd dy2 = this->subtract_error(this->error(), dy0);
       dx(i) = h;
       v->plus(dx); // return to original state.
       dx(i) = 0.0;

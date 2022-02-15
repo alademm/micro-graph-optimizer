@@ -56,14 +56,6 @@ public:
     m_yaw_rad = normalize_angle(m_yaw_rad + delta[2]);
   }
 
-  virtual Eigen::VectorXd minus(const Variable& other)const override
-  {
-    const Pose2d& s = static_cast<const Pose2d&>(other);
-    Eigen::Vector3d res;
-    res << (s.m_x - m_x), (s.m_y - m_y), normalize_angle(s.m_yaw_rad - m_yaw_rad);
-    return res;
-  }
-
   double x()const { return m_x; }
   double y()const { return m_y; }
   double yaw_rad()const { return m_yaw_rad; }
@@ -95,6 +87,13 @@ public:
     r.head<2>() = Eigen::Rotation2Dd(v_a->yaw_rad()).toRotationMatrix().transpose() * pos_ab_pred - m_pos_ab;
     r(2) = normalize_angle((v_b->yaw_rad() - v_a->yaw_rad()) - m_yaw_ab_rad);
     return r;
+  }
+
+  virtual Eigen::VectorXd subtract_error(const Eigen::VectorXd& e1, const Eigen::VectorXd& e2)const override
+  {
+    Eigen::Vector3d diff;
+    diff << (e1(0) - e2(0)), (e1(1) - e2(1)), normalize_angle(e1(2) - e2(2));
+    return diff;
   }
 
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW;

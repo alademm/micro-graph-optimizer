@@ -43,12 +43,6 @@ public:
     m_position[1] += delta[1];
   }
 
-  virtual Eigen::VectorXd minus(const Variable& other)const override
-  {
-    const Pose& s = static_cast<const Pose&>(other);
-    return (s.m_position - m_position);
-  }
-
 private:
   Eigen::Vector2d m_position;
 };
@@ -66,6 +60,11 @@ public:
   virtual Eigen::VectorXd error()const override
   {
     return (static_cast<Pose*>(this->variable_at(0))->position() - m_measurement);
+  }
+
+  virtual Eigen::VectorXd subtract_error(const Eigen::VectorXd& e1, const Eigen::VectorXd& e2)const override
+  {
+    return (e1 - e2);
   }
 
 private:
@@ -88,6 +87,11 @@ public:
     const auto p1 = static_cast<Pose*>(this->variable_at(0))->position();
     const auto p2 = static_cast<Pose*>(this->variable_at(1))->position();
     return ((p2 - p1) - m_measurement);
+  }
+
+  virtual Eigen::VectorXd subtract_error(const Eigen::VectorXd& e1, const Eigen::VectorXd& e2)const override
+  {
+    return (e1 - e2);
   }
 
 private:
